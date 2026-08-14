@@ -1,9 +1,8 @@
 local stdio = require("@lune/stdio")
 
 local build_info = require("./build_info")
-local binary_directory = require("./utils/binary_directory")
 local timestamp_converter = require("./utils/timestamp_converter")
-local months = require("./constants/months")
+local data_manager = require("./data_manager")
 --[[
 data = {
     dailyAllowance = 50,
@@ -33,108 +32,7 @@ data = {
     }
 }
 ]]
-local data = binary_directory.loadPermanentData()
-local function getTodayDay()
-    local currentDate = os.date("*t")
 
-    -- 2. Construct a dictionary representing exactly 00:00:00 of today
-    local midnightTable = {
-        year  = currentDate.year,
-        month = currentDate.month,
-        day   = currentDate.day,
-        hour  = 0,
-        min   = 0,
-        sec   = 0
-    }
-
-    -- 3. Convert the dictionary into a Unix timestamp
-    local localMidnightTimestamp = os.time(midnightTable)
-    return localMidnightTimestamp
-end
-local function calculateSavings()
-    local saved = data.initialSavings or 0
-    for _,v in pairs(data.days) do
-        local allowance = v.allowance
-        for _, transaction in v.transactions do
-            allowance -= transaction.amount
-        end
-        saved +=allowance
-    end
-
-    for _,v in pairs(data.savingsTransactions) do
-        saved -= v.amount
-    end
-
-    print(saved)
-end
-
-local function checkTodayTable()
-    local todayMidnightTime = getTodayDay();
-    
-    for index,day in pairs(data.days) do
-        if day.midnightTime == todayMidnightTime then
-            return index
-        end
-    end
-    local dayTable = {
-        midnightTime = getTodayDay(),
-        allowance = data.dailyAllowance,
-        transactions = {}
-    }
-    data.days[#data.days+1]=dayTable
-    return #data.days
-end
-
-local function inputTransaction(name, amount)
-    local todayTableIndex = checkTodayTable()
-    local transaction = {
-        name = name,
-        amount = amount,
-        timestamp = os.time()
-    }
-    table.insert(data.days[todayTableIndex].transactions, transaction)
-    binary_directory.savePermanentData(data)
-end
-
-local function inputSavingsTransaction(name, amount)
-    local transaction = {
-         name = name,
-        amount = amount,
-        timestamp = os.time()
-    }
-    table.insert(data.savingsTransactions, transaction)
-    binary_directory.savePermanentData(data)
-end
-
-local function getDayStats(day)
-    local amountSpent = 0
-    local amountSaved = day.allowance
-    for _, transaction in day.transactions do
-        amountSpent += transaction.amount
-    end
-    amountSaved -= amountSpent
-    return amountSpent, amountSaved
-end
-
-local function showAllTransactions()
-    print(string.format("Beginning of dataset: %s", timestamp_converter:getFullDate(data.datasetBeginTime)))
-    for _, day in data.days do
-        local amountSpent, amountSaved = getDayStats(day)
-        local date = os.date("*t", day.midnightTime)
-        print(string.format("%s %s, %s", months[date.month], date.day, date.year))
-        for transactionIndex, transaction in day.transactions do
-            print(string.format("   %s %s %sMAD", timestamp_converter:getClock(transaction.timestamp), transaction.name, -transaction.amount))
-        end
-        print(string.format("Result: %sMAD spent, %sMAD saved", amountSpent, amountSaved))
-    end
-end
-
-local function showAllSavingsTransactions()
-    print(string.format("Beginning of dataset: %s", timestamp_converter:getFullDate(data.datasetBeginTime)))
-    for _,transaction in data.savingsTransactions do
-        print(string.format("%s:\n %s: %s MAD", transaction.name, timestamp_converter:getFullDate(transaction.timestamp), -transaction.amount))
-    end
-end
 local features = {
     {
         Name = "Log a transaction",
@@ -142,7 +40,7 @@ local features = {
             stdio.write("")
             local name = stdio.prompt("text", "Insert the name of the transaction");
             local amount = stdio.prompt("text", "Insert the amount deducted");
-            inputTransaction(name, tonumber(amount));
+            data_manager:inputTransaction(name, tonumber(amount));
         end
     },
     {
@@ -151,25 +49,25 @@ local features = {
             stdio.write("")
             local name = stdio.prompt("text", "Insert the name of the transaction");
             local amount = stdio.prompt("text", "Insert the amount deducted");
-            inputSavingsTransaction(name, tonumber(amount));
+            data_manager:inputSavingsTransaction(name, tonumber(amount));
         end
     },
     {
         Name = "Show savings",
         Callback = function()
-            calculateSavings()
+            print(data_manager:calculateSavings())
         end
     },
     {
         Name = "List all day-to-day transactions",
         Callback = function()
-            showAllTransactions()
+            data_manager:showAllTransactions()
         end
     },
     {
         Name = "List all savings transactions",
         Callback = function()
-            showAllSavingsTransactions()
+            data_manager:showAllSavingsTransactions()
         end
     },
     {
