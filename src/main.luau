@@ -123,7 +123,7 @@ local function showAllTransactions()
         local date = os.date("*t", day.midnightTime)
         print(string.format("%s %s, %s", months[date.month], date.day, date.year))
         for transactionIndex, transaction in day.transactions do
-            print(string.format("   %s %s -%sMAD", os.date("%H:%M:%S", transaction.timestamp), transaction.name, transaction.amount))
+            print(string.format("   %s %s %sMAD", os.date("%H:%M:%S", transaction.timestamp), transaction.name, -transaction.amount))
         end
         print(string.format("Result: %sMAD spent, %sMAD saved", amountSpent, amountSaved))
     end
