@@ -18,7 +18,7 @@ function module:calculateSavings()
     end
 
     for _,v in pairs(data.savingsTransactions) do
-        saved -= v.amount
+        saved += v.amount
     end
 
     return saved
