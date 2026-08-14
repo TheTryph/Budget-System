@@ -2,6 +2,7 @@ local stdio = require("@lune/stdio")
 
 local build_info = require("./build_info")
 local binary_directory = require("./utils/binary_directory")
+local timestamp_converter = require("./utils/timestamp_converter")
 local months = require("./constants/months")
 --[[
 data = {
@@ -116,29 +117,24 @@ local function getDayStats(day)
 end
 
 local function showAllTransactions()
-    local beginDate = os.date("*t", data.datasetBeginTime)
-    print(string.format("Beginning of dataset: %s %s, %s at %s", months[beginDate.month], beginDate.day, beginDate.year, os.date("%H:%M:%S", data.datasetBeginTime)))
+    print(string.format("Beginning of dataset: %s", timestamp_converter:getFullDate(data.datasetBeginTime)))
     for _, day in data.days do
         local amountSpent, amountSaved = getDayStats(day)
         local date = os.date("*t", day.midnightTime)
         print(string.format("%s %s, %s", months[date.month], date.day, date.year))
         for transactionIndex, transaction in day.transactions do
-            print(string.format("   %s %s %sMAD", os.date("%H:%M:%S", transaction.timestamp), transaction.name, -transaction.amount))
+            print(string.format("   %s %s %sMAD", timestamp_converter:getClock(transaction.timestamp), transaction.name, -transaction.amount))
         end
         print(string.format("Result: %sMAD spent, %sMAD saved", amountSpent, amountSaved))
     end
 end
 
 local function showAllSavingsTransactions()
-    local beginDate = os.date("*t", data.datasetBeginTime)
-    print(string.format("Beginning of dataset: %s %s, %s at %s", months[beginDate.month], beginDate.day, beginDate.year, os.date("%H:%M:%S", data.datasetBeginTime)))
+    print(string.format("Beginning of dataset: %s", timestamp_converter:getFullDate(data.datasetBeginTime)))
     for _,transaction in data.savingsTransactions do
-        local date = os.date("*t", transaction.timestamp)
-        print(string.format("%s:\n %s %s, %s at %s: %s MAD", transaction.name, months[date.month], date.day, date.year, os.date("%H:%M:%S", transaction.timestamp), -transaction.amount))
+        print(string.format("%s:\n %s: %s MAD", transaction.name, timestamp_converter:getFullDate(transaction.timestamp), -transaction.amount))
     end
 end
-
-local buildDate = os.date("*t", build_info.date)
 local features = {
     {
         Name = "Log a transaction",
@@ -179,7 +175,7 @@ local features = {
     {
         Name = "Show build info",
         Callback = function()
-            print(string.format("Build date: %s %s, %s T %s", months[buildDate.month], buildDate.day, buildDate.year, os.date("%H:%M:%S", build_info.date)))
+            print(string.format("Build date: %s", timestamp_converter:getFullDate(build_info.date)))
             print(string.format("Version: %s", build_info.version))
         end
     },
@@ -191,8 +187,9 @@ local features = {
     }
 }
 
+
 local loop = true
-stdio.write(string.format("Welcome to the financial tracking utility! (%s %s, %s T %s build)\n", months[buildDate.month], buildDate.day, buildDate.year, os.date("%H:%M:%S", build_info.date)))
+stdio.write(string.format("Welcome to the financial tracking utility! (%s build)\n", timestamp_converter:getFullDate(build_info.date)))
 --stdio.write(string.format("You have %s left for today!"))
 while loop do
     stdio.write("What would you like to do?\n")
