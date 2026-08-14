@@ -10,7 +10,7 @@ local features = {
         Callback = function()
             stdio.write("")
             local name = stdio.prompt("text", "Insert the name of the transaction");
-            local amount = stdio.prompt("text", "Insert the amount deducted");
+            local amount = stdio.prompt("text", "Insert the amount change");
             data_manager:inputTransaction(name, tonumber(amount));
         end
     },
@@ -19,7 +19,7 @@ local features = {
         Callback = function()
             stdio.write("")
             local name = stdio.prompt("text", "Insert the name of the transaction");
-            local amount = stdio.prompt("text", "Insert the amount deducted");
+            local amount = stdio.prompt("text", "Insert the amount change");
             data_manager:inputSavingsTransaction(name, tonumber(amount));
         end
     },

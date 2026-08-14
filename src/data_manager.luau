@@ -12,9 +12,9 @@ function module:calculateSavings()
     for _,v in pairs(data.days) do
         local allowance = v.allowance
         for _, transaction in v.transactions do
-            allowance -= transaction.amount
+            allowance += transaction.amount
         end
-        saved +=allowance
+        saved += allowance
     end
 
     for _,v in pairs(data.savingsTransactions) do
@@ -65,32 +65,32 @@ function module:inputSavingsTransaction(name, amount)
 end
 
 function module:getDayStats(day)
-    local amountSpent = 0
+    local amountChange = 0
     local amountSaved = day.allowance
     for _, transaction in day.transactions do
-        amountSpent += transaction.amount
+        amountChange += transaction.amount
     end
-    amountSaved -= amountSpent
-    return amountSpent, amountSaved
+    amountSaved += amountChange
+    return amountChange, amountSaved
 end
 
 
 function module:showAllTransactions()
     print(string.format("Beginning of dataset: %s", timestamp_converter:getFullDate(data.datasetBeginTime)))
     for _, day in data.days do
-        local amountSpent, amountSaved = module:getDayStats(day)
+        local amountChange, amountSaved = module:getDayStats(day)
         print(string.format("%s", timestamp_converter:getDate(day.midnightTime)))
         for transactionIndex, transaction in day.transactions do
-            print(string.format("   %s %s %sMAD", timestamp_converter:getClock(transaction.timestamp), transaction.name, -transaction.amount))
+            print(string.format("   %s %s %sMAD", timestamp_converter:getClock(transaction.timestamp), transaction.name, transaction.amount))
         end
-        print(string.format("Result: %sMAD spent, %sMAD saved", amountSpent, amountSaved))
+        print(string.format("Result: %sMAD variation, %sMAD saved", amountChange, amountSaved))
     end
 end
 
 function module:showAllSavingsTransactions()
     print(string.format("Beginning of dataset: %s", timestamp_converter:getFullDate(data.datasetBeginTime)))
     for _,transaction in data.savingsTransactions do
-        print(string.format("%s:\n %s: %s MAD", transaction.name, timestamp_converter:getFullDate(transaction.timestamp), -transaction.amount))
+        print(string.format("%s:\n %s: %s MAD", transaction.name, timestamp_converter:getFullDate(transaction.timestamp), transaction.amount))
     end
 end
 
