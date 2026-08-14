@@ -3,35 +3,6 @@ local stdio = require("@lune/stdio")
 local build_info = require("./build_info")
 local timestamp_converter = require("./utils/timestamp_converter")
 local data_manager = require("./data_manager")
---[[
-data = {
-    dailyAllowance = 50,
-    initialSavings = 20,
-    datasetBeginTime = 1785711600,
-    days = {
-        {
-            midnightTime = 1785711600,
-            transactions = {
-                {
-                    name = "Dinner",
-                    amount = 20,
-                    timestamp = 1785716632
-                }
-            }
-        },
-        {
-            midnightTime = 1785343600,
-            transactions = {
-                {
-                    name = "Dinner",
-                    amount = 20,
-                    timestamp = 1785373600
-                }
-            }
-        }
-    }
-}
-]]
 
 local features = {
     {
