@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Budget System</title>
+    <link rel = "stylesheet" href = "general.css">
+  </head>
+  <body>
+    
+          
+    <div class="container">
+      <div class="card">
+        <h1>Budget System</h1>
+
+        <form>
+          <div class="row">
+            <div class="field">
+              <button type="button" id="create-account">Account Creation</button>
+            </div>
+          </div>
+
+          <div class="row" style="margin-top: 16px;">
+            <div class="field">
+              <label for="category">Account 1</label>
+              <select id="account-selector-1">
+              </select>
+            </div>
+            
+            <div class="field">
+              <label for="category">Account 2</label>
+              <select id="account-selector-2">
+              </select>
+            </div>
+            <div class="field"> 
+              <label for="amount">Amount to transfer</label>
+              <input id="amount" type="number" min="0" placeholder="0" />
+            </div>
+            <div class="field">
+              <label>&nbsp;</label>
+              <button type="button" id="transfer">Transfer</button>
+            </div>
+          </div>
+        </form>
+
+        <div class="summary" id="accounts">
+            <div class="summary-item"><div class="summary-label">${element.Name}</div><div class="summary-value">${element.Amount}MAD</div></div>
+        </div>
+      </div>
+    </div>
+    <script src="index.js">
+    </script>
+  </body>
+</html>

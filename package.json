@@ -1,0 +1,46 @@
+{
+  "name": "budget-system",
+  "version": "1.0.1",
+  "description": "Financial Ledger",
+  "homepage": "https://github.com/TheTryph/Budget-System#readme",
+  "bugs": {
+    "url": "https://github.com/TheTryph/Budget-System/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TheTryph/Budget-System.git"
+  },
+  "license": "ISC",
+  "author": "",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "start": "electron .",
+    "dist": "electron-builder",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "build": {
+    "appId": "com.distriabindustries.budgetsystem",
+    "productName": "Budget System",
+    "files": [
+      "index.js",
+      "src/backend/",
+      "src/frontend/"
+    ],
+    "win": {
+      "target": "portable"
+    }
+  },
+  "dependencies": {
+  },
+  "devDependencies": {
+    "electron": "^44.4.3",
+    "cz-conventional-changelog": "^3.3.0",
+    "electron-builder": "^26.15.3"
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
+  }
+}

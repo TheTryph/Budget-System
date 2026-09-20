@@ -6,6 +6,7 @@ function TransactionController:Move(name, from, to, amount, currency : string?)
     table.insert(to.Transactions, newTransaction)
     from.Wallet:RemoveMoney(amount, currency)
     to.Wallet:AddMoney(amount, currency)
+    return newTransaction
 end
 
 return TransactionController

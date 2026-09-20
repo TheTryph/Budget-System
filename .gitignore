@@ -1,3 +1,5 @@
 /build
 /src/build_info.luau
 processed.luau
+/node_modules
+/dist

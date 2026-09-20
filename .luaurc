@@ -1,10 +1,10 @@
 {
     "aliases": {
-        "libraries": "src/Libraries",
+        "libraries": "src/backend/Libraries",
         "lune": "~/.lune/.typedefs/0.10.1/",
         "lint": "@std/commands/lint/types",
-        "lute": "~/.lute/typedefs/1.0.1/lute",
+        "transform": "@std/commands/transform/types",
         "std": "~/.lute/typedefs/1.0.1/std",
-        "transform": "@std/commands/transform/types"
+        "lute": "~/.lute/typedefs/1.0.1/lute"
     }
 }
